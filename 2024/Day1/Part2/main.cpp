@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
-#include <algorithm> // Include algorithm header for std::sort
+#include <algorithm>
 
 #define LINE_SIZE 14
 #define INT_SIZE 2046
