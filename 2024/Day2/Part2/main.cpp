@@ -70,9 +70,42 @@ int main(void)
             printf("\n");
             save++;
         }
+        else
+        {
+            for (size_t k = 0; k < numbers[i].size(); k++)
+            {
+                std::vector<int> temp = numbers[i];
+                temp.erase(temp.begin() + k);
+                std::vector<int> tempDerivative = derivatives({temp})[0];
+
+                if (isSameSignal(tempDerivative))
+                {
+                    bool tempIsSave = true;
+                    for (size_t j = 0; j < tempDerivative.size(); j++)
+                    {
+                        if (tempDerivative[j] < 0)
+                        {
+                            tempDerivative[j] *= -1;
+                        }
+
+                        if (tempDerivative[j] > 3 || tempDerivative[j] < 1)
+                        {
+                            tempIsSave = false;
+                            break;
+                        }
+                    }
+
+                    if (tempIsSave)
+                    {
+                        saved++;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
-    printf("Save: %d\n", save);
+    printf("Save: %d\nSaved: %d\n", save, save + saved);
 
     return 0;
 }
