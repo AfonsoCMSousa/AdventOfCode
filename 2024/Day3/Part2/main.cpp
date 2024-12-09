@@ -6,8 +6,6 @@
 #include <vector>
 #include <cstring>
 
-// 690531 < aswser < 161563014
-
 std::vector<std::vector<char>> readCharFile(const char *filePath)
 {
     std::ifstream file(filePath);
@@ -61,9 +59,21 @@ bool isMull(std::vector<std::vector<char>> &text, size_t i, size_t j)
     return text[i][j - 2] == 'm' && text[i][j - 1] == 'u' && text[i][j] == 'l';
 }
 
+bool isDo(std::vector<std::vector<char>> &text, size_t i, size_t j)
+{
+    return text[i][j - 1] == 'd' && text[i][j] == 'o';
+}
+
+bool isDont(std::vector<std::vector<char>> &text, size_t i, size_t j)
+{
+    return text[i][j - 4] == 'd' && text[i][j - 3] == 'o' && text[i][j - 2] == 'n' && text[i][j - 1] == '\'' && text[i][j] == 't';
+}
+
 int main(void)
 {
     int number1 = 0, number2 = 0;
+
+    bool isMullEnable = true;
 
     u_int64_t total = 0;
     std::vector<std::vector<char>> text = readCharFile("input.txt");
@@ -72,7 +82,18 @@ int main(void)
     {
         for (u_int64_t j = 0; j < text[i].size(); j++)
         {
-            if (isMull(text, i, j))
+
+            if (isDo(text, i, j))
+            {
+                isMullEnable = true;
+            }
+
+            if (isDont(text, i, j))
+            {
+                isMullEnable = false;
+            }
+
+            if (isMull(text, i, j) && isMullEnable)
             {
                 if (text[i][j + 1] == '(')
                 {
