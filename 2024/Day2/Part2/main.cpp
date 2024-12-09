@@ -97,7 +97,7 @@ int main(void)
 
                     if (tempIsSave)
                     {
-                        saved++;
+                        save++;
                         break;
                     }
                 }
