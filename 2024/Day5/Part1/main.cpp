@@ -140,10 +140,7 @@ int main(void)
             }
         }
 
-        if (isRules)
-        {
-        }
-        else
+        if (!isRules)
         {
             for (size_t ints = 0; ints < intFile[lines].size(); ints++)
             {
