@@ -6,6 +6,8 @@
 #include <vector>
 #include <cstring>
 
+// I Dont know how this works, I just tryied swaping stuff arround
+
 std::vector<std::vector<char>> readCharFile(const char *filePath)
 {
     std::ifstream file(filePath);
@@ -65,7 +67,7 @@ typedef struct Rule
     int *rules = nullptr; // Initialize rules to nullptr
 } Rule;
 
-bool isValid(Rule rules, int check)
+bool contains(Rule rules, int check)
 {
     for (size_t i = 0; i < rules.size; i++)
     {
@@ -77,6 +79,30 @@ bool isValid(Rule rules, int check)
     return false;
 }
 
+void verify(std::__1::vector<std::__1::vector<int>> &intFile, size_t lines, size_t ints, Rule Rules[100], bool &isValidRule, int &retFlag)
+{
+    retFlag = 1;
+    int key = intFile[lines][ints];
+    /*
+    printf("Key :%d\n", key);
+    for (size_t j = 0; j < Rules[key].size; j++)
+    {
+        printf("[%d]", Rules[key].rules[j]);
+    }
+    printf("\n");
+    */
+
+    if ((!contains(Rules[key], intFile[lines][ints + 1])) && ints < intFile[lines].size() - 1)
+    {
+        // printf("failed!\n");
+        isValidRule = false;
+        {
+            retFlag = 2;
+            return;
+        };
+    }
+}
+
 int main(void)
 {
     std::vector<std::vector<int>> intFile = readIntFile("input.txt");
@@ -84,6 +110,7 @@ int main(void)
     Rule Rules[100] = {0};
 
     u_int64_t total = 0;
+    u_int64_t totalSaved = 0;
 
     bool isRules = true;
     printf("\nDysplaying Rules:\n\n");
@@ -123,27 +150,15 @@ int main(void)
             }
             else
             {
-                int key = intFile[lines][ints];
-                /* printf("Key :%d\n", key);
-                for (size_t j = 0; j < Rules[key].size; j++)
-                {
-                    printf("[%d]", Rules[key].rules[j]);
-                }
-                printf("\n"); */
+                int retFlag;
+                verify(intFile, lines, ints, Rules, isValidRule, retFlag);
 
-                if ((!isValid(Rules[key], intFile[lines][ints + 1])) && ints < intFile[lines].size() - 1)
-                {
-                    // printf("failed!\n");
-                    isValidRule = false;
+                if (retFlag == 2)
                     break;
-                }
             }
         }
 
-        if (isRules)
-        {
-        }
-        else
+        if (!isRules)
         {
             for (size_t ints = 0; ints < intFile[lines].size(); ints++)
             {
@@ -157,12 +172,41 @@ int main(void)
             }
             else
             {
-                printf("\nNot-Valid!\n\n");
+                isValidRule = true;
+                for (size_t i = 0; i < intFile[lines].size(); i++)
+                {
+                    for (size_t j = 0; j < intFile[lines].size(); j++)
+                    {
+                        if (contains(Rules[intFile[lines][i]], intFile[lines][j]))
+                        {
+                            int aux = intFile[lines][i];
+                            intFile[lines][i] = intFile[lines][j];
+                            intFile[lines][j] = aux;
+                        }
+                    }
+                }
+
+                printf("\n");
+                for (size_t ints = 0; ints < intFile[lines].size(); ints++)
+                {
+                    printf("%2u,", intFile[lines][ints]);
+                }
+                printf("\n");
+
+                if (isValidRule)
+                {
+                    printf("Can be saved!\n");
+                    totalSaved += intFile[lines][intFile[lines].size() / 2];
+                }
+                else
+                {
+                    printf("Can't be saved!\n");
+                }
             }
         }
     }
 
-    /* printf("Rules: \n");
+    printf("Rules: \n");
 
     for (size_t i = 0; i < 100; i++)
     {
@@ -177,9 +221,9 @@ int main(void)
             printf("[%d]", Rules[i].rules[j]);
         }
         printf("\n");
-    } */
+    }
 
-    printf("Total: %llu\n", total);
+    printf("Total: %llu\nTotal Saved: %llu\n", total, totalSaved);
 
     // Free any possible pointer
     for (size_t i = 0; i < 100; i++)
