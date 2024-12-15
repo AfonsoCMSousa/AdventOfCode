@@ -77,6 +77,8 @@ bool isValid(Rule rules, int check)
     return false;
 }
 
+void verify(std::__1::vector<std::__1::vector<int>> &intFile, size_t lines, size_t ints, Rule Rules[100], bool &isValidRule, int &retFlag);
+
 int main(void)
 {
     std::vector<std::vector<int>> intFile = readIntFile("input.txt");
@@ -123,20 +125,10 @@ int main(void)
             }
             else
             {
-                int key = intFile[lines][ints];
-                /* printf("Key :%d\n", key);
-                for (size_t j = 0; j < Rules[key].size; j++)
-                {
-                    printf("[%d]", Rules[key].rules[j]);
-                }
-                printf("\n"); */
-
-                if ((!isValid(Rules[key], intFile[lines][ints + 1])) && ints < intFile[lines].size() - 1)
-                {
-                    // printf("failed!\n");
-                    isValidRule = false;
+                int retFlag;
+                verify(intFile, lines, ints, Rules, isValidRule, retFlag);
+                if (retFlag == 2)
                     break;
-                }
             }
         }
 
@@ -185,4 +177,26 @@ int main(void)
     }
 
     return 0;
+}
+
+void verify(std::__1::vector<std::__1::vector<int>> &intFile, size_t lines, size_t ints, Rule Rules[100], bool &isValidRule, int &retFlag)
+{
+    retFlag = 1;
+    int key = intFile[lines][ints];
+    /* printf("Key :%d\n", key);
+    for (size_t j = 0; j < Rules[key].size; j++)
+    {
+        printf("[%d]", Rules[key].rules[j]);
+    }
+    printf("\n"); */
+
+    if ((!isValid(Rules[key], intFile[lines][ints + 1])) && ints < intFile[lines].size() - 1)
+    {
+        // printf("failed!\n");
+        isValidRule = false;
+        {
+            retFlag = 2;
+            return;
+        };
+    }
 }
