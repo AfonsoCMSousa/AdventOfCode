@@ -77,9 +77,58 @@ typedef struct guard
     orientation rotation;
 } guard;
 
-bool castRay(char **)
+bool castRay(char **text, orientation angle, guard Guard, int maxHeigh, int maxWidth)
 {
+    int currentX = Guard.x;
+    int currentY = Guard.y;
 
+    switch (angle)
+    {
+    case 0:
+        for (int height = currentX; height >= 0; height--)
+        {
+            if (text[height][currentY] == '#')
+            {
+                return true;
+            }
+        }
+        break;
+
+    case 1:
+        for (size_t width = currentY; width < maxWidth; width++)
+        {
+            if (text[currentX][width] == '#')
+            {
+                return true;
+            }
+        }
+        break;
+
+    case 2:
+        for (size_t heigh = currentX; heigh < maxHeigh; heigh++)
+        {
+            if (text[heigh][currentY] == '#')
+            {
+                return true;
+            }
+        }
+        break;
+
+    case 3:
+        for (size_t width = currentY; width > 0; width--)
+        {
+            if (text[currentX][width] == '#')
+            {
+                return true;
+            }
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    return false;
 }
 
 // Yeah, C now.. Advent was too easy
@@ -90,6 +139,8 @@ int main(void)
     int charsPerLine = 0;
 
     u_int32_t movementCount = 1;
+    u_int16_t possibleLoop = 0;
+
     bool isOutOFBounds = false;
     char **textFile = readCharFile("example.txt", &FileSIZE);
 
@@ -165,6 +216,14 @@ int main(void)
                     textFile[myGuard.x][myGuard.y] = 'X';
                     movementCount++;
                 }
+                else
+                {
+                    if (castRay(textFile, RIGHT, myGuard, FileSIZE, charsPerLine))
+                    {
+                        possibleLoop++;
+                        printf("Found a loop!\n");
+                    }
+                }
                 myGuard.x--;
             }
             break;
@@ -187,6 +246,14 @@ int main(void)
                 {
                     textFile[myGuard.x][myGuard.y] = 'X';
                     movementCount++;
+                }
+                else
+                {
+                    if (castRay(textFile, DOWN, myGuard, FileSIZE, charsPerLine))
+                    {
+                        possibleLoop++;
+                        printf("Found a loop!\n");
+                    }
                 }
                 myGuard.y++;
             }
@@ -212,6 +279,14 @@ int main(void)
                     textFile[myGuard.x][myGuard.y] = 'X';
                     movementCount++;
                 }
+                else
+                {
+                    if (castRay(textFile, LEFT, myGuard, FileSIZE, charsPerLine))
+                    {
+                        possibleLoop++;
+                        printf("Found a loop!\n");
+                    }
+                }
                 myGuard.x++;
             }
 
@@ -236,6 +311,14 @@ int main(void)
                     textFile[myGuard.x][myGuard.y] = 'X';
                     movementCount++;
                 }
+                else
+                {
+                    if (castRay(textFile, UP, myGuard, FileSIZE, charsPerLine))
+                    {
+                        possibleLoop++;
+                        printf("Found a loop!\n");
+                    }
+                }
                 myGuard.y--;
             }
 
@@ -245,9 +328,16 @@ int main(void)
             return 1;
             break;
         }
+
+        for (size_t lines = 0; lines < FileSIZE; lines++)
+        {
+            printf("%s", textFile[lines]);
+        }
+
+        getchar();
     }
 
     printf("\nThe guard is at: [%d][%d] with [%d] orientation = \'%c\'\n", myGuard.x, myGuard.y, myGuard.rotation, textFile[myGuard.x][myGuard.y]);
-    printf("Movent made by the gard: %u\n", movementCount);
+    printf("Movent made by the gard: %u\nPossible loopholes: %u\n", movementCount, possibleLoop);
     return 0;
 }
