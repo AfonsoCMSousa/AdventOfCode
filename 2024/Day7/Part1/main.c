@@ -28,7 +28,7 @@ char **readCharFile(const char *filePath, int *lineCount)
     return lines;
 }
 
-int **readIntFile(const char *filePath, int *lineCount)
+long **readIntFile(const char *filePath, int *lineCount)
 {
     FILE *file = fopen(filePath, "r");
     if (!file)
@@ -37,23 +37,26 @@ int **readIntFile(const char *filePath, int *lineCount)
         return NULL;
     }
 
-    int **lines = NULL;
+    long **lines = NULL;
     char line[1024];
     *lineCount = 0;
 
     while (fgets(line, sizeof(line), file))
     {
-        lines = realloc(lines, sizeof(int *) * (*lineCount + 1));
+        lines = realloc(lines, sizeof(long *) * (*lineCount + 1));
         lines[*lineCount] = NULL;
         int number, numCount = 0;
         char *token = strtok(line, " ");
         while (token)
         {
-            lines[*lineCount] = realloc(lines[*lineCount], sizeof(int) * (numCount + 1));
+            lines[*lineCount] = realloc(lines[*lineCount], sizeof(long) * (numCount + 1));
             lines[*lineCount][numCount] = strtol(token, NULL, 10);
             numCount++;
             token = strtok(NULL, " ");
         }
+        lines[*lineCount] = realloc(lines[*lineCount], sizeof(long) * (numCount + 1));
+        lines[*lineCount][numCount] = -1;
+        numCount++;
         (*lineCount)++;
     }
 
@@ -61,7 +64,7 @@ int **readIntFile(const char *filePath, int *lineCount)
     return lines;
 }
 
-bool evaluate(int numbers[], int n, int target, int current, int index)
+bool evaluate(long numbers[], int n, long target, long current, int index)
 {
     if (index == n)
     {
@@ -83,11 +86,11 @@ bool evaluate(int numbers[], int n, int target, int current, int index)
     return false;
 }
 
-bool isTargetAchievable(int numbers[], int n)
+bool isTargetAchievable(long numbers[], int n)
 {
     if (n <= 1)
         return false;
-    int target = numbers[0];
+    long target = numbers[0];
     return evaluate(numbers, n, target, numbers[1], 2);
 }
 
@@ -95,12 +98,12 @@ int main(void)
 {
     int lineSize;
     u_int64_t sumOfAchievableTargets = 0;
-    int **intFile = readIntFile("input.txt", &lineSize);
+    long **intFile = readIntFile("input.txt", &lineSize);
 
     for (size_t line = 0; line < lineSize; line++)
     {
         size_t counter = 0;
-        while (!(intFile[line][counter] == '\0'))
+        while (!(intFile[line][counter] == -1))
         {
             // printf("%8d,", intFile[line][counter]);
             counter++;
