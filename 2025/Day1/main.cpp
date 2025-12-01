@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <vector>
 
-#define __PART_2_SOLUTION 1
+#define __PART_2_SOLUTION 0
 
 // Default FileIO file:
 #include "../include/file_io.cpp"
@@ -68,8 +68,14 @@ class Dial {
 			}
 		}
 
-		if (position == 0 && !wasCounted) {
+		if (position == 0) {
+#if __PART_2_SOLUTION == 0
 			counter++;
+#else
+			if (!wasCounted) {
+				counter++;
+			}
+#endif
 		}
 	}
 };
