@@ -9,3 +9,8 @@ Inside each ```yyyy/DayX/``` directory, you can compile and run the provided C++
 ```bash
 g++ -std=c++2a -O2 ./main.cpp -o ./run
 ```
+
+### For C solutions: 
+```bash
+gcc -O2 ./main.c -o ./run
+```
