@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-std::vector<std::vector<char>> readCharFile(const char *filePath)
+std::vector<std::vector<char>> read_char(const char *filePath)
 {
     std::ifstream file(filePath);
     if (!file.is_open())
@@ -27,7 +27,7 @@ std::vector<std::vector<char>> readCharFile(const char *filePath)
     return lines;
 }
 
-std::vector<std::vector<int>> readIntFile(const char *filePath)
+std::vector<std::vector<int>> read_int(const char *filePath)
 {
     std::ifstream file(filePath);
     if (!file.is_open())
