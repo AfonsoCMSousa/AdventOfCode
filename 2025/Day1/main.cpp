@@ -72,11 +72,6 @@ class Dial {
 			counter++;
 		}
 	}
-
-	// DEBUG:
-	int getPos() {
-		return position;
-	}
 };
 
 int main(void) {
