@@ -19,6 +19,10 @@ typedef struct {
 	uint_fast64_t max;
 } interval;
 
+bool is_multiple_of(uint64_t number, uint64_t multiple) {
+    return (number % multiple) == 0;
+}
+
 // NOTE: Esta até deixa o prof. Marco orgolhoso
 uint64_t cauculuate_invalid_ids_in_interval(interval inter) {
 	uint64_t invalids = 0;
@@ -26,11 +30,7 @@ uint64_t cauculuate_invalid_ids_in_interval(interval inter) {
 	for (uint64_t i = inter.min; i <= inter.max; i++) {
 		vector<uint64_t> _digitis = get_digits(i);
 
-		if (_digitis.size() % 2 != 0) {
-			continue;
-		}
 
-#if __PART_2_SOLUTION == 0
 		string _first_half, _second_half;
 		for (int _j = _digitis.size() - 1; _j >= 0; _j--) {
 			if (_j >= _digitis.size() / 2) {
@@ -41,25 +41,40 @@ uint64_t cauculuate_invalid_ids_in_interval(interval inter) {
 		}
 
 		if (_first_half == _second_half) {
-			printf("In [%llu, %llu]: %llu is invalid\n", inter.min, inter.max, i);
+			println("In [{}, {}]: {} is invalid\n", inter.min, inter.max, i);
 			invalids += i;
+            continue;
 		}
-#else
 
-		vector<string> _keys;
+#if __PART_2_SOLUTION == 1
+		vector<string> _key = {};
+		for (int _dd = 0; _dd < _digitis.size() / 2; _dd++) {
 
-		for (int _j = (_digitis.size() / 2) - 1; _j >= 0; _j--) {
-            string _temp;
-            for (int __k = _digitis.size() - 1; __k >= _j; __k--) {
-                _temp.push_back(_digitis[_j] + '0');
-                _keys.push_back(_temp);
+			string temp = "";
+			for (int _j = 0; _j <= _dd; _j++) {
+				temp.push_back(_digitis[(_digitis.size() - 1) - _j] + '0');
+			}
+			_key.push_back(temp);
+		}
+
+		for (string key : _key) {
+            string inter_string = _second_half + _first_half;
+
+            if (!is_multiple_of(inter_string.length(), key.length())) {
+                continue;
             }
-		}
 
-        for (string _key : _keys) {
-            printf("[%s]\t", _key.c_str());
-        }
-        printf("\n");
+            string _test = "";
+            for (int _j = key.length(); _j <= inter_string.length(); _j += key.length()) {
+                _test += key;
+            }
+
+			if (inter_string == _test) {
+				println("In [{}, {}]: {} is invalid because {} == {}\n", inter.min, inter.max, i, key.c_str(), inter_string.c_str());
+				invalids += i;
+                break;
+			}
+		}
 #endif
 	}
 
@@ -67,7 +82,7 @@ uint64_t cauculuate_invalid_ids_in_interval(interval inter) {
 }
 
 int main(void) {
-	vector<vector<uint64_t>> lines = read_int_seperator("./sample.txt", {',', '-'});
+	vector<vector<uint64_t>> lines = read_int_seperator("./test_case.txt", {',', '-'});
 	uint64_t sum_of_invalids = 0;
 
 	for (vector<uint64_t> numbers : lines) {
@@ -76,6 +91,6 @@ int main(void) {
 		}
 	}
 
-	printf("\nSum of invalid ID's: %llu\n", sum_of_invalids);
+	println("\nSum of invalid ID's: {}\n", sum_of_invalids);
 	return 0;
 }
