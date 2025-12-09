@@ -12,7 +12,7 @@ std::vector<std::vector<char>> read_char(const char *filePath)
     std::ifstream file(filePath);
     if (!file.is_open())
     {
-        return std::vector<std::vector<char>>();
+        throw std::runtime_error("Could not open file");
     }
 
     std::vector<std::vector<char>> lines;
@@ -28,22 +28,22 @@ std::vector<std::vector<char>> read_char(const char *filePath)
     return lines;
 }
 
-std::vector<std::vector<int>> read_int(const char *filePath)
+std::vector<std::vector<int64_t>> read_int(const char *filePath)
 {
     std::ifstream file(filePath);
     if (!file.is_open())
     {
-        return std::vector<std::vector<int>>();
+        throw std::runtime_error("Could not open file");
     }
 
-    std::vector<std::vector<int>> lines;
+    std::vector<std::vector<int64_t>> lines;
     std::string line;
 
     while (std::getline(file, line))
     {
         std::istringstream iss(line);
-        std::vector<int> longlongLine;
-        int number;
+        std::vector<int64_t> longlongLine;
+        int64_t number;
         while (iss >> number)
         {
             longlongLine.push_back(number);
@@ -60,7 +60,7 @@ std::vector<std::vector<uint64_t>> read_int_seperator(const char *filePath, std:
     std::ifstream file(filePath);
     if (!file.is_open())
     {
-        return std::vector<std::vector<uint64_t>>();
+        throw std::runtime_error("Could not open file");
     }
 
     std::vector<std::vector<uint64_t>> lines;
@@ -102,6 +102,8 @@ std::vector<uint64_t> get_digits(uint64_t number) {
 		_return_vec.push_back(number % 10);
 		number /= 10;
 	}
+    std::reverse(_return_vec.begin(), _return_vec.end());
+
 	return _return_vec;
 }
 
