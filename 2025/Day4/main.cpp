@@ -94,12 +94,12 @@ class Map {
 		accessible_rools++;
 	};
 
-    void removeRoolPos(uint32_t x, uint32_t y) {
-        if (x >= this->width || y >= this->height) {
-            throw runtime_error(format("Map is not big enought to remove ({},{}) in it", x, y));
-        }
-        map[y * this->width + x] = Rool();
-    }
+	void removeRoolPos(uint32_t x, uint32_t y) {
+		if (x >= this->width || y >= this->height) {
+			throw runtime_error(format("Map is not big enought to remove ({},{}) in it", x, y));
+		}
+		map[y * this->width + x] = Rool();
+	}
 
 	Rool getRoolPos(uint32_t x, uint32_t y) {
 		if ((x + (y * this->height)) > __size) {
@@ -201,21 +201,21 @@ int main(void) {
 			for (uint16_t letter = 0; letter < map_string[line].size(); letter++) {
 				if (map.getNearbyRools(letter, line) < 4 && map.getRoolPos(letter, line).isExists() && !map.getRoolPos(letter, line).isAccess()) {
 					map.setRoolAccess(letter, line);
-					if (__PART_2_SOLUTION == 1) 
-                        newly_accessible++;
+					if (__PART_2_SOLUTION == 1)
+						newly_accessible++;
 				}
 			}
 		}
 
-        for (uint16_t line = 0; line < map_string.size(); line++) {
-            for (uint16_t letter = 0; letter < map_string[line].size(); letter++) {
-                if (map.getRoolPos(letter, line).isAccess()) {
-                    map.removeRoolPos(letter, line);
-                }
-            }
-        }
-
 #if __PART_2_SOLUTION == 1
+		for (uint16_t line = 0; line < map_string.size(); line++) {
+			for (uint16_t letter = 0; letter < map_string[line].size(); letter++) {
+				if (map.getRoolPos(letter, line).isAccess()) {
+					map.removeRoolPos(letter, line);
+				}
+			}
+		}
+
 		if (newly_accessible == 0) {
 			break;
 		}
